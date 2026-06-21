@@ -115,4 +115,7 @@ SERPAPI_KEY=your_secret_serpapi_key_here
 **Run the Dashboard:** Launch the interactive Streamlit user application:
 ```  
 streamlit run app.py
+
+alternatively, launch the app here
+https://singapore-aviation-pricing.streamlit.app/
 ```
