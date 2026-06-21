@@ -64,7 +64,7 @@ html, body, [class*="css"], .stMarkdown {
 
 /* Card layout - Soft white card with dark text */
 .glass-card {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(0, 0, 0, 0.08);
@@ -207,11 +207,7 @@ html, body, [class*="css"], .stMarkdown {
     display: inline-block;
 }
 
-/* Style Streamlit container borders to look like glass cards with extreme specificity for Streamlit Cloud */
-.stApp div[data-testid="stAppViewContainer"] div[data-testid="stVerticalBlockBorderWrapper"],
-.stApp div[data-testid="stAppViewContainer"] div[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stVerticalBlock"],
-div.st-key-header_container,
-div.st-key-header_container [data-testid="stVerticalBlock"],
+/* Style Streamlit container borders to look like glass cards with 30% transparency */
 div.st-key-param_container,
 div.st-key-param_container [data-testid="stVerticalBlock"],
 div.st-key-find_param_container,
@@ -221,24 +217,50 @@ div.st-key-chart_container [data-testid="stVerticalBlock"],
 div.st-key-tips_container,
 div.st-key-tips_container [data-testid="stVerticalBlock"],
 div[data-testid="stVerticalBlockBorderWrapper"] {
-    background-color: #ffffff !important;
-    background: #ffffff !important;
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    background-color: rgba(255, 255, 255, 0.7) !important;
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
     border-radius: 16px !important;
     padding: 24px !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
 }
 
-/* Style the tab bar row as a premium white card wrapper */
+/* Header container: Rounded top, flat bottom, no margin bottom */
+div.st-key-header_container,
+div.st-key-header_container [data-testid="stVerticalBlock"] {
+    background-color: rgba(255, 255, 255, 0.7) !important;
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    border-bottom: none !important;
+    border-top-left-radius: 16px !important;
+    border-top-right-radius: 16px !important;
+    border-bottom-left-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+    padding: 24px 24px 12px 24px !important;
+    margin-bottom: 0px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Tab bar container: Flat top, rounded bottom, pull up to merge with header card */
 div[role="tablist"] {
-    background-color: #ffffff !important;
-    background: #ffffff !important;
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
-    border-radius: 12px !important;
-    padding: 10px 20px !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+    background-color: rgba(255, 255, 255, 0.7) !important;
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    border-top: none !important;
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+    border-bottom-left-radius: 16px !important;
+    border-bottom-right-radius: 16px !important;
+    padding: 0px 24px 12px 24px !important;
+    margin-top: -16px !important; /* Pull up to touch the header card exactly */
     margin-bottom: 25px !important;
-    margin-top: 15px !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05) !important;
 }
 
 /* Reset nested block borders only in the second (right) column to prevent double-boxing on insights */
