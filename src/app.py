@@ -207,15 +207,17 @@ html, body, [class*="css"], .stMarkdown {
     display: inline-block;
 }
 
-/* Style Streamlit container borders to look like glass cards */
-div[data-testid="stVerticalBlockBorderWrapper"],
-div[data-testid="stVerticalBlock"] > div[style*="border"],
-div[class*="stVerticalBlockBorderWrapper"] {
-    background-color: rgba(255, 255, 255, 0.9) !important;
-    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+/* Style Streamlit container borders to look like glass cards with extreme specificity for Streamlit Cloud */
+.stApp div[data-testid="stAppViewContainer"] div[data-testid="stVerticalBlockBorderWrapper"],
+.stApp div[data-testid="stVerticalBlockBorderWrapper"],
+div[data-testid="stAppViewContainer"] div[data-testid="stVerticalBlockBorderWrapper"],
+div[data-testid="stAppViewContainer"] div[class*="stVerticalBlockBorderWrapper"],
+div[data-testid="stVerticalBlockBorderWrapper"] {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
     border-radius: 16px !important;
     padding: 24px !important;
-    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
 }
 
 /* Reset nested block borders only in the second (right) column to prevent double-boxing on insights */
