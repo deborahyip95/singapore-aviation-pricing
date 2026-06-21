@@ -208,7 +208,9 @@ html, body, [class*="css"], .stMarkdown {
 }
 
 /* Style Streamlit container borders to look like glass cards */
-div[data-testid="stVerticalBlockBorderWrapper"] {
+div[data-testid="stVerticalBlockBorderWrapper"],
+div[data-testid="stVerticalBlock"] > div[style*="border"],
+div[class*="stVerticalBlockBorderWrapper"] {
     background-color: rgba(255, 255, 255, 0.9) !important;
     border: 1px solid rgba(0, 0, 0, 0.08) !important;
     border-radius: 16px !important;
@@ -1073,13 +1075,11 @@ else:
             else:
                 # Glass card instructions empty state
                 st.markdown(
-                    """"
                     '<div style="background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 16px; padding: 60px 20px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.05); color: #475569; margin-top: 10px;">'
                     '<div style="font-size: 3rem; margin-bottom: 15px;">📅</div>'
                     '<h3 style="color: #0f172a; margin-top: 0; font-size: 1.3rem; font-weight: 600;">Optimal Booking Window Finder</h3>'
                     '<p style="font-size: 0.95rem; margin-bottom: 0;">Adjust the flight parameters and your desired target budget on the left, then click <strong>Calculate</strong> to search for the cheapest dates to book your flight.</p>'
-                    '</div>'
-                    """,
+                    '</div>',
                     unsafe_allow_html=True
                 )
 
