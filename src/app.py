@@ -210,10 +210,14 @@ html, body, [class*="css"], .stMarkdown {
 /* Style Streamlit container borders to look like glass cards with extreme specificity for Streamlit Cloud */
 .stApp div[data-testid="stAppViewContainer"] div[data-testid="stVerticalBlockBorderWrapper"],
 .stApp div[data-testid="stAppViewContainer"] div[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stVerticalBlock"],
-.stApp div[data-testid="stVerticalBlockBorderWrapper"],
-.stApp div[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stVerticalBlock"],
-div[data-testid="stAppViewContainer"] div[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stVerticalBlock"],
-div[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stVerticalBlock"],
+div.st-key-param_container,
+div.st-key-param_container [data-testid="stVerticalBlock"],
+div.st-key-find_param_container,
+div.st-key-find_param_container [data-testid="stVerticalBlock"],
+div.st-key-chart_container,
+div.st-key-chart_container [data-testid="stVerticalBlock"],
+div.st-key-tips_container,
+div.st-key-tips_container [data-testid="stVerticalBlock"],
 div[data-testid="stVerticalBlockBorderWrapper"] {
     background-color: #ffffff !important;
     background: #ffffff !important;
@@ -503,7 +507,7 @@ else:
         col_input, col_pred = st.columns([0.9, 1.1], gap="medium")
         
         with col_input:
-            with st.container(border=True):
+            with st.container(key="param_container", border=True):
                 st.subheader("🔍 Search Flight Parameters")
                 
                 # 1. Flight Details
@@ -793,7 +797,7 @@ else:
         col_find_input, col_find_pred = st.columns([1.0, 1.0], gap="medium")
         
         with col_find_input:
-            with st.container(border=True):
+            with st.container(key="find_param_container", border=True):
                 st.subheader("🔍 Find Optimal Booking Window")
                 
                 # 1. Flight Details
@@ -1027,7 +1031,7 @@ else:
                 st.markdown(status_card_html, unsafe_allow_html=True)
                 
                 # Visual comparison chart
-                with st.container(border=True):
+                with st.container(key="chart_container", border=True):
                     st.markdown('<h3 style="margin-top: 0; color: #0f172a; margin-bottom: 15px; font-size: 1.25rem; font-weight: 600;">📊 Price Comparison by Booking Date</h3>', unsafe_allow_html=True)
                     
                     import altair as alt
@@ -1073,7 +1077,7 @@ else:
                     st.altair_chart(chart_f, use_container_width=True)
                     
                 # Helpful Tip Card
-                with st.container(border=True):
+                with st.container(key="tips_container", border=True):
                     st.markdown('<h3 style="margin-top: 0; color: #0f172a; margin-bottom: 12px; font-size: 1.25rem; font-weight: 600;">💡 Recommendation Insights</h3>', unsafe_allow_html=True)
                     
                     for adv in advice:
