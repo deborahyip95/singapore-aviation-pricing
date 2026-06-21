@@ -209,11 +209,11 @@ html, body, [class*="css"], .stMarkdown {
 
 /* Style Streamlit container borders to look like glass cards with extreme specificity for Streamlit Cloud */
 .stApp div[data-testid="stAppViewContainer"] div[data-testid="stVerticalBlockBorderWrapper"],
-.stApp div[data-testid="stAppViewContainer"] div[data-testid="stVerticalBlockBorderWrapper"] > div,
+.stApp div[data-testid="stAppViewContainer"] div[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stVerticalBlock"],
 .stApp div[data-testid="stVerticalBlockBorderWrapper"],
-.stApp div[data-testid="stVerticalBlockBorderWrapper"] > div,
-div[data-testid="stAppViewContainer"] div[data-testid="stVerticalBlockBorderWrapper"],
-div[data-testid="stAppViewContainer"] div[class*="stVerticalBlockBorderWrapper"],
+.stApp div[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stVerticalBlock"],
+div[data-testid="stAppViewContainer"] div[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stVerticalBlock"],
+div[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stVerticalBlock"],
 div[data-testid="stVerticalBlockBorderWrapper"] {
     background-color: #ffffff !important;
     background: #ffffff !important;
