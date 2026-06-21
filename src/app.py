@@ -210,6 +210,8 @@ html, body, [class*="css"], .stMarkdown {
 /* Style Streamlit container borders to look like glass cards with extreme specificity for Streamlit Cloud */
 .stApp div[data-testid="stAppViewContainer"] div[data-testid="stVerticalBlockBorderWrapper"],
 .stApp div[data-testid="stAppViewContainer"] div[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stVerticalBlock"],
+div.st-key-header_container,
+div.st-key-header_container [data-testid="stVerticalBlock"],
 div.st-key-param_container,
 div.st-key-param_container [data-testid="stVerticalBlock"],
 div.st-key-find_param_container,
@@ -225,6 +227,18 @@ div[data-testid="stVerticalBlockBorderWrapper"] {
     border-radius: 16px !important;
     padding: 24px !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Style the tab bar row as a premium white card wrapper */
+div[data-testid="stTabBar"] {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border-radius: 12px !important;
+    padding: 10px 20px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+    margin-bottom: 25px !important;
+    margin-top: 15px !important;
 }
 
 /* Reset nested block borders only in the second (right) column to prevent double-boxing on insights */
@@ -492,9 +506,9 @@ EXPECTED_FEATURES = [
     'booking_window_57-70 days', 'booking_window_71-84 days'
 ]
 
-# App layout
-st.markdown('<div class="title-gradient">✈️ Dynamic Fare Optimiser</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle-text">Taking the turbulence out of ticket pricing.</div>', unsafe_allow_html=True)
+with st.container(key="header_container", border=True):
+    st.markdown('<div class="title-gradient">✈️ Dynamic Fare Optimiser</div>', unsafe_allow_html=True)
+    st.markdown('<div class="subtitle-text" style="margin-bottom: 0px;">Taking the turbulence out of ticket pricing.</div>', unsafe_allow_html=True)
 
 if model is None:
     st.error("Could not load the flight predictor model. Please make sure 'flight_predictor_rf.joblib' is in the application directory.")
