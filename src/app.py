@@ -234,7 +234,7 @@ div[data-testid="stWidgetLabel"] p {
 # Load the model
 @st.cache_resource
 def load_prediction_model():
-    model_path = "flight_predictor_rf.joblib"
+    model_path = os.path.join(os.path.dirname(__file__), "flight_predictor_rf.joblib")
     try:
         model = joblib.load(model_path)
         return model
