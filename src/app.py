@@ -230,7 +230,7 @@ div[data-testid="stVerticalBlockBorderWrapper"] {
 }
 
 /* Style the tab bar row as a premium white card wrapper */
-div[data-testid="stTabBar"] {
+div[role="tablist"] {
     background-color: #ffffff !important;
     background: #ffffff !important;
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
