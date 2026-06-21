@@ -1,0 +1,28 @@
+# ==========================================
+# 1. Credentials and Security Isolation
+# ==========================================
+.env
+
+# ==========================================
+# 2. Local Python Environment (Dependencies tracked via requirements.txt)
+# ==========================================
+pricing_env/
+venv/
+env/
+__pycache__/
+*.pyc
+
+# ==========================================
+# 3. Intermediate Data Buffers & Raw API Drops
+# ==========================================
+dataset_1bcombine.csv
+raw_api_response.json
+*.json
+
+# ==========================================
+# 4. OS and Workspace Editor Clutter
+# ==========================================
+.DS_Store
+Thumbs.db
+.vscode/
+.ipynb_checkpoints/
