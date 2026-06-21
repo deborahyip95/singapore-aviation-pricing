@@ -445,7 +445,7 @@ def get_destination_climate_html(dest_code, month):
         icon = "🌍"
         pack = "All-weather gear."
 
-    html_card = f'<div>' \
+    html_card = f'<div class="glass-card">' \
                 f'<h3 style="margin-top: 0; color: #0f172a; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; font-size: 1.25rem; font-weight: 600; white-space: nowrap; line-height: 1.2;">' \
                 f'<span>⛅ Destination Climate Insights</span>' \
                 f'</h3>' \
@@ -500,164 +500,165 @@ else:
         col_input, col_pred = st.columns([0.9, 1.1], gap="medium")
         
         with col_input:
-            st.subheader("🔍 Search Flight Parameters")
-            
-            # 1. Flight Details
-            st.markdown('<h3 style="margin-top: 0; margin-bottom: 12px; color: #0f172a; font-size: 1.25rem; font-weight: 600; white-space: nowrap; line-height: 1.2;">Flight Details</h3>', unsafe_allow_html=True)
-            col_org, col_dst = st.columns(2)
-            with col_org:
-                origins = ["Singapore (SIN)", "Bangkok (BKK)", "London (LHR)", "Melbourne (MEL)", "Tokyo (NRT)"]
-                origin = st.selectbox("Origin Airport", origins, index=0)
-            
-            with col_dst:
-                # Dynamic filtering of destinations to only allow valid routes from training set
-                # Supported routes: SIN-BKK, BKK-SIN, SIN-LHR, LHR-SIN, SIN-MEL, MEL-SIN, SIN-NRT, NRT-SIN
-                valid_destinations = []
-                if "SIN" in origin:
-                    valid_destinations = ["Bangkok (BKK)", "London (LHR)", "Melbourne (MEL)", "Tokyo (NRT)"]
-                else:
-                    valid_destinations = ["Singapore (SIN)"]
-                    
-                destination = st.selectbox("Destination Airport", valid_destinations, index=0)
-            
-            # Extract clean route string (e.g. SIN-BKK)
-            origin_code = origin.split("(")[1].replace(")", "")
-            dest_code = destination.split("(")[1].replace(")", "")
-            selected_route = f"{origin_code}-{dest_code}"
-            
-            # Use session state to prevent widget validation crashes (e.g. if Booking Date is shifted after Departure Date)
-            today_date = datetime.today().date()
-            if "booking_date" not in st.session_state:
-                st.session_state.booking_date = today_date
-            if "departure_date" not in st.session_state:
-                st.session_state.departure_date = today_date + timedelta(days=30)
-            if "calculate_clicked" not in st.session_state:
-                st.session_state.calculate_clicked = False
-            if "finder_results" not in st.session_state:
-                st.session_state.finder_results = None
+            with st.container(border=True):
+                st.subheader("🔍 Search Flight Parameters")
                 
-            col_book, col_dep = st.columns(2)
-            
-            with col_book:
-                booking_date = st.date_input(
-                    "Booking Date",
-                    value=st.session_state.booking_date,
-                    min_value=today_date - timedelta(days=365),
-                    max_value=today_date + timedelta(days=365),
-                    key="booking_date_widget"
-                )
+                # 1. Flight Details
+                st.markdown('<h3 style="margin-top: 0; margin-bottom: 12px; color: #0f172a; font-size: 1.25rem; font-weight: 600; white-space: nowrap; line-height: 1.2;">Flight Details</h3>', unsafe_allow_html=True)
+                col_org, col_dst = st.columns(2)
+                with col_org:
+                    origins = ["Singapore (SIN)", "Bangkok (BKK)", "London (LHR)", "Melbourne (MEL)", "Tokyo (NRT)"]
+                    origin = st.selectbox("Origin Airport", origins, index=0)
                 
-                # Today button stacked directly underneath the Booking Date input
-                if st.button("Today", key="reset_booking_today", use_container_width=True):
-                    st.session_state.booking_date = today_date
-                    # If today_date is after departure_date, adjust departure_date
-                    if today_date > st.session_state.departure_date:
-                        st.session_state.departure_date = today_date + timedelta(days=30)
-                    st.rerun()
+                with col_dst:
+                    # Dynamic filtering of destinations to only allow valid routes from training set
+                    # Supported routes: SIN-BKK, BKK-SIN, SIN-LHR, LHR-SIN, SIN-MEL, MEL-SIN, SIN-NRT, NRT-SIN
+                    valid_destinations = []
+                    if "SIN" in origin:
+                        valid_destinations = ["Bangkok (BKK)", "London (LHR)", "Melbourne (MEL)", "Tokyo (NRT)"]
+                    else:
+                        valid_destinations = ["Singapore (SIN)"]
                         
-            # If the user sets booking_date ahead of the departure_date, adjust departure_date in session state to stay valid
-            if booking_date > st.session_state.departure_date:
-                st.session_state.departure_date = booking_date + timedelta(days=30)
+                    destination = st.selectbox("Destination Airport", valid_destinations, index=0)
                 
-            with col_dep:
-                departure_date = st.date_input(
-                    "Departure Date",
-                    value=st.session_state.departure_date,
-                    min_value=booking_date,
-                    key="departure_date_widget"
+                # Extract clean route string (e.g. SIN-BKK)
+                origin_code = origin.split("(")[1].replace(")", "")
+                dest_code = destination.split("(")[1].replace(")", "")
+                selected_route = f"{origin_code}-{dest_code}"
+                
+                # Use session state to prevent widget validation crashes (e.g. if Booking Date is shifted after Departure Date)
+                today_date = datetime.today().date()
+                if "booking_date" not in st.session_state:
+                    st.session_state.booking_date = today_date
+                if "departure_date" not in st.session_state:
+                    st.session_state.departure_date = today_date + timedelta(days=30)
+                if "calculate_clicked" not in st.session_state:
+                    st.session_state.calculate_clicked = False
+                if "finder_results" not in st.session_state:
+                    st.session_state.finder_results = None
+                    
+                col_book, col_dep = st.columns(2)
+                
+                with col_book:
+                    booking_date = st.date_input(
+                        "Booking Date",
+                        value=st.session_state.booking_date,
+                        min_value=today_date - timedelta(days=365),
+                        max_value=today_date + timedelta(days=365),
+                        key="booking_date_widget"
+                    )
+                    
+                    # Today button stacked directly underneath the Booking Date input
+                    if st.button("Today", key="reset_booking_today", use_container_width=True):
+                        st.session_state.booking_date = today_date
+                        # If today_date is after departure_date, adjust departure_date
+                        if today_date > st.session_state.departure_date:
+                            st.session_state.departure_date = today_date + timedelta(days=30)
+                        st.rerun()
+                            
+                # If the user sets booking_date ahead of the departure_date, adjust departure_date in session state to stay valid
+                if booking_date > st.session_state.departure_date:
+                    st.session_state.departure_date = booking_date + timedelta(days=30)
+                    
+                with col_dep:
+                    departure_date = st.date_input(
+                        "Departure Date",
+                        value=st.session_state.departure_date,
+                        min_value=booking_date,
+                        key="departure_date_widget"
+                    )
+                    
+                # Sync variables back to session state for the next run
+                st.session_state.booking_date = booking_date
+                st.session_state.departure_date = departure_date
+                    
+                # Calculate days to departure
+                days_to_departure = (departure_date - booking_date).days
+                
+                # Clamp to bounds and generate warning if needed
+                clamped_days = days_to_departure
+                if days_to_departure <= 0:
+                    clamped_days = 1
+                    st.warning("⚠️ Departure date must be after booking date. Calculated window set to 1 day.")
+                elif days_to_departure > 120:
+                    st.warning(f"⚠️ Model was trained on booking windows up to 84 days. Predicting for {days_to_departure} days ahead might have higher variance.")
+                    
+                # Map to booking window categories
+                if clamped_days <= 14:
+                    booking_window_cat = "1-14 days"
+                elif 15 <= clamped_days <= 28:
+                    booking_window_cat = "15-28 days"
+                elif 29 <= clamped_days <= 42:
+                    booking_window_cat = "29-42 days"
+                elif 43 <= clamped_days <= 56:
+                    booking_window_cat = "43-56 days"
+                elif 57 <= clamped_days <= 70:
+                    booking_window_cat = "57-70 days"
+                else:
+                    booking_window_cat = "71-84 days"
+                    
+                # Display the derived timing details
+                day_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+                weekday_idx = departure_date.weekday()
+                dep_day_name = day_names[weekday_idx]
+                is_weekend_val = (weekday_idx >= 5) # Sat/Sun
+                dep_month = departure_date.month
+                
+                st.info(f"📅 **Travel Stats:** {clamped_days} days to departure • **Departure Day:** {dep_day_name} " + 
+                        ("🟩" if not is_weekend_val else "🟥 (Weekend)"))
+                
+                # 3. Holidays
+                st.markdown('<h3 style="margin-top: 15px; margin-bottom: 12px; color: #0f172a; font-size: 1.25rem; font-weight: 600; white-space: nowrap; line-height: 1.2;">Holiday Calendars</h3>', unsafe_allow_html=True)
+                st.caption("These fields are auto-populated based on the selected departure date and route, but you can manually override them.")
+                
+                # Calculate holidays automatically using the holidays package
+                try:
+                    holiday_lookup = get_holiday_lookup_sets(departure_date.year)
+                    auto_holiday_sin = departure_date in holiday_lookup.get('SIN', set())
+                    
+                    other_airport = dest_code if origin_code == 'SIN' else origin_code
+                    auto_holiday_other = departure_date in holiday_lookup.get(other_airport, set())
+                except Exception:
+                    auto_holiday_sin = False
+                    auto_holiday_other = False
+                    
+                # School holiday calculation
+                try:
+                    auto_sch_holiday = is_sch_holiday_calc(departure_date)
+                except Exception:
+                    auto_sch_holiday = False
+                    
+                col_h1, col_h2, col_h3 = st.columns(3)
+                with col_h1:
+                    is_holiday_sin_val = 1 if st.checkbox("Singapore Public Holiday", value=auto_holiday_sin) else 0
+                with col_h2:
+                    is_holiday_other_val = 1 if st.checkbox("Destination Public Holiday", value=auto_holiday_other) else 0
+                with col_h3:
+                    is_sch_holiday_val = 1 if st.checkbox("Singapore School Holiday", value=auto_sch_holiday) else 0
+                    
+                st.markdown("---")
+                
+                # 4. Carrier Type
+                st.markdown('<h3 style="margin-top: 15px; margin-bottom: 12px; color: #0f172a; font-size: 1.25rem; font-weight: 600; white-space: nowrap; line-height: 1.2;">Carrier Preferences</h3>', unsafe_allow_html=True)
+                
+                is_lhr_route = (origin_code == 'LHR' or dest_code == 'LHR')
+                if is_lhr_route:
+                    st.caption("Fares are based on Economy class tickets only. *(Low Cost Carriers are unavailable for LHR routes)*")
+                    carrier_options = ["Full Service Carrier (e.g. Singapore Airlines, Qantas, British Airways)"]
+                else:
+                    st.caption("Fares are based on Economy class tickets only.")
+                    carrier_options = [
+                        "Full Service Carrier (e.g. Singapore Airlines, Qantas, British Airways)", 
+                        "Low Cost Carrier (e.g. AirAsia, Scoot, Jetstar)"
+                    ]
+                
+                carrier_choice = st.radio(
+                    "Carrier Service Class",
+                    carrier_options,
+                    index=0,
+                    label_visibility="collapsed"
                 )
-                
-            # Sync variables back to session state for the next run
-            st.session_state.booking_date = booking_date
-            st.session_state.departure_date = departure_date
-                
-            # Calculate days to departure
-            days_to_departure = (departure_date - booking_date).days
-            
-            # Clamp to bounds and generate warning if needed
-            clamped_days = days_to_departure
-            if days_to_departure <= 0:
-                clamped_days = 1
-                st.warning("⚠️ Departure date must be after booking date. Calculated window set to 1 day.")
-            elif days_to_departure > 120:
-                st.warning(f"⚠️ Model was trained on booking windows up to 84 days. Predicting for {days_to_departure} days ahead might have higher variance.")
-                
-            # Map to booking window categories
-            if clamped_days <= 14:
-                booking_window_cat = "1-14 days"
-            elif 15 <= clamped_days <= 28:
-                booking_window_cat = "15-28 days"
-            elif 29 <= clamped_days <= 42:
-                booking_window_cat = "29-42 days"
-            elif 43 <= clamped_days <= 56:
-                booking_window_cat = "43-56 days"
-            elif 57 <= clamped_days <= 70:
-                booking_window_cat = "57-70 days"
-            else:
-                booking_window_cat = "71-84 days"
-                
-            # Display the derived timing details
-            day_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-            weekday_idx = departure_date.weekday()
-            dep_day_name = day_names[weekday_idx]
-            is_weekend_val = (weekday_idx >= 5) # Sat/Sun
-            dep_month = departure_date.month
-            
-            st.info(f"📅 **Travel Stats:** {clamped_days} days to departure • **Departure Day:** {dep_day_name} " + 
-                    ("🟩" if not is_weekend_val else "🟥 (Weekend)"))
-            
-            # 3. Holidays
-            st.markdown('<h3 style="margin-top: 15px; margin-bottom: 12px; color: #0f172a; font-size: 1.25rem; font-weight: 600; white-space: nowrap; line-height: 1.2;">Holiday Calendars</h3>', unsafe_allow_html=True)
-            st.caption("These fields are auto-populated based on the selected departure date and route, but you can manually override them.")
-            
-            # Calculate holidays automatically using the holidays package
-            try:
-                holiday_lookup = get_holiday_lookup_sets(departure_date.year)
-                auto_holiday_sin = departure_date in holiday_lookup.get('SIN', set())
-                
-                other_airport = dest_code if origin_code == 'SIN' else origin_code
-                auto_holiday_other = departure_date in holiday_lookup.get(other_airport, set())
-            except Exception:
-                auto_holiday_sin = False
-                auto_holiday_other = False
-                
-            # School holiday calculation
-            try:
-                auto_sch_holiday = is_sch_holiday_calc(departure_date)
-            except Exception:
-                auto_sch_holiday = False
-                
-            col_h1, col_h2, col_h3 = st.columns(3)
-            with col_h1:
-                is_holiday_sin_val = 1 if st.checkbox("Singapore Public Holiday", value=auto_holiday_sin) else 0
-            with col_h2:
-                is_holiday_other_val = 1 if st.checkbox("Destination Public Holiday", value=auto_holiday_other) else 0
-            with col_h3:
-                is_sch_holiday_val = 1 if st.checkbox("Singapore School Holiday", value=auto_sch_holiday) else 0
-                
-            st.markdown("---")
-            
-            # 4. Carrier Type
-            st.markdown('<h3 style="margin-top: 15px; margin-bottom: 12px; color: #0f172a; font-size: 1.25rem; font-weight: 600; white-space: nowrap; line-height: 1.2;">Carrier Preferences</h3>', unsafe_allow_html=True)
-            
-            is_lhr_route = (origin_code == 'LHR' or dest_code == 'LHR')
-            if is_lhr_route:
-                st.caption("Fares are based on Economy class tickets only. *(Low Cost Carriers are unavailable for LHR routes)*")
-                carrier_options = ["Full Service Carrier (e.g. Singapore Airlines, Qantas, British Airways)"]
-            else:
-                st.caption("Fares are based on Economy class tickets only.")
-                carrier_options = [
-                    "Full Service Carrier (e.g. Singapore Airlines, Qantas, British Airways)", 
-                    "Low Cost Carrier (e.g. AirAsia, Scoot, Jetstar)"
-                ]
-            
-            carrier_choice = st.radio(
-                "Carrier Service Class",
-                carrier_options,
-                index=0,
-                label_visibility="collapsed"
-            )
-            is_lcc_val = 1 if "Low Cost" in carrier_choice else 0
+                is_lcc_val = 1 if "Low Cost" in carrier_choice else 0
             
         with col_pred:
             # Preprocessing inputs into DataFrame
@@ -768,7 +769,7 @@ else:
                 
                 with col_ins_left:
                     # Render Insights (Single flat string to prevent markdown code block detection)
-                    insights_html = '<div><h3 style="margin-top: 0; color: #0f172a; margin-bottom: 20px; font-size: 1.25rem; font-weight: 600; white-space: nowrap; display: flex; align-items: center; gap: 8px; line-height: 1.2;">💡 Smart Travel Insights</h3>'
+                    insights_html = '<div class="glass-card"><h3 style="margin-top: 0; color: #0f172a; margin-bottom: 20px; font-size: 1.25rem; font-weight: 600; white-space: nowrap; display: flex; align-items: center; gap: 8px; line-height: 1.2;">💡 Smart Travel Insights</h3>'
                     for badge_class, title, desc in insights:
                         insights_html += f'<div style="margin-bottom: 20px;">' \
                                          f'<span class="{badge_class}">{title}</span>' \
@@ -789,105 +790,105 @@ else:
         col_find_input, col_find_pred = st.columns([1.0, 1.0], gap="medium")
         
         with col_find_input:
-            # Removed the st.container(border=True) wrapper to prevent double-boxing and reduce layers
-            st.subheader("🔍 Find Optimal Booking Window")
-            
-            # 1. Flight Details
-            st.markdown('<h3 style="margin-top: 0; margin-bottom: 8px; color: #0f172a; font-size: 1.25rem; font-weight: 600; white-space: nowrap; line-height: 1.2;">Flight Details</h3>', unsafe_allow_html=True)
-            col_org_f, col_dst_f = st.columns(2)
-            with col_org_f:
-                origins_f = ["Singapore (SIN)", "Bangkok (BKK)", "London (LHR)", "Melbourne (MEL)", "Tokyo (NRT)"]
-                origin_f = st.selectbox("Origin Airport", origins_f, index=0, key="origin_find_widget")
-            
-            with col_dst_f:
-                valid_destinations_f = []
-                if "SIN" in origin_f:
-                    valid_destinations_f = ["Bangkok (BKK)", "London (LHR)", "Melbourne (MEL)", "Tokyo (NRT)"]
+            with st.container(border=True):
+                st.subheader("🔍 Find Optimal Booking Window")
+                
+                # 1. Flight Details
+                st.markdown('<h3 style="margin-top: 0; margin-bottom: 8px; color: #0f172a; font-size: 1.25rem; font-weight: 600; white-space: nowrap; line-height: 1.2;">Flight Details</h3>', unsafe_allow_html=True)
+                col_org_f, col_dst_f = st.columns(2)
+                with col_org_f:
+                    origins_f = ["Singapore (SIN)", "Bangkok (BKK)", "London (LHR)", "Melbourne (MEL)", "Tokyo (NRT)"]
+                    origin_f = st.selectbox("Origin Airport", origins_f, index=0, key="origin_find_widget")
+                
+                with col_dst_f:
+                    valid_destinations_f = []
+                    if "SIN" in origin_f:
+                        valid_destinations_f = ["Bangkok (BKK)", "London (LHR)", "Melbourne (MEL)", "Tokyo (NRT)"]
+                    else:
+                        valid_destinations_f = ["Singapore (SIN)"]
+                    destination_f = st.selectbox("Destination Airport", valid_destinations_f, index=0, key="destination_find_widget")
+                
+                origin_code_f = origin_f.split("(")[1].replace(")", "")
+                dest_code_f = destination_f.split("(")[1].replace(")", "")
+                selected_route_f = f"{origin_code_f}-{dest_code_f}"
+                
+                # 2. Travel Date & Target Budget Side-by-Side (More compact!)
+                today_date = datetime.today().date()
+                col_date_f, col_budget_f = st.columns(2)
+                with col_date_f:
+                    departure_date_f = st.date_input(
+                        "Departure Date",
+                        value=today_date + timedelta(days=30),
+                        min_value=today_date,
+                        key="departure_date_find_widget"
+                    )
+                with col_budget_f:
+                    target_price_f = st.number_input(
+                        "Target Budget (S$)",
+                        min_value=10.0,
+                        value=500.0,
+                        step=10.0,
+                        key="target_price_find_widget"
+                    )
+                
+                day_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+                weekday_idx_f = departure_date_f.weekday()
+                dep_day_name_f = day_names[weekday_idx_f]
+                is_weekend_val_f = (weekday_idx_f >= 5)
+                dep_month_f = departure_date_f.month
+                
+                st.info(f"📅 **Departure:** {dep_day_name_f} " + 
+                        ("🟩" if not is_weekend_val_f else "🟥 (Weekend)"))
+                
+                # 3. Carrier Preferences
+                st.markdown('<h3 style="margin-top: 15px; margin-bottom: 12px; color: #0f172a; font-size: 1.25rem; font-weight: 600; white-space: nowrap; line-height: 1.2;">Carrier Preferences</h3>', unsafe_allow_html=True)
+                
+                is_lhr_route_f = (origin_code_f == 'LHR' or dest_code_f == 'LHR')
+                if is_lhr_route_f:
+                    st.caption("Fares are based on Economy class tickets only. *(Low Cost Carriers are unavailable for LHR routes)*")
+                    carrier_options_f = ["Full Service Carrier (e.g. Singapore Airlines, Qantas, British Airways)"]
                 else:
-                    valid_destinations_f = ["Singapore (SIN)"]
-                destination_f = st.selectbox("Destination Airport", valid_destinations_f, index=0, key="destination_find_widget")
-            
-            origin_code_f = origin_f.split("(")[1].replace(")", "")
-            dest_code_f = destination_f.split("(")[1].replace(")", "")
-            selected_route_f = f"{origin_code_f}-{dest_code_f}"
-            
-            # 2. Travel Date & Target Budget Side-by-Side (More compact!)
-            today_date = datetime.today().date()
-            col_date_f, col_budget_f = st.columns(2)
-            with col_date_f:
-                departure_date_f = st.date_input(
-                    "Departure Date",
-                    value=today_date + timedelta(days=30),
-                    min_value=today_date,
-                    key="departure_date_find_widget"
+                    st.caption("Fares are based on Economy class tickets only.")
+                    carrier_options_f = [
+                        "Full Service Carrier (e.g. Singapore Airlines, Qantas, British Airways)", 
+                        "Low Cost Carrier (e.g. AirAsia, Scoot, Jetstar)"
+                    ]
+                
+                carrier_choice_f = st.radio(
+                    "Carrier Service Class",
+                    carrier_options_f,
+                    index=0,
+                    key="carrier_choice_find_widget",
+                    label_visibility="collapsed"
                 )
-            with col_budget_f:
-                target_price_f = st.number_input(
-                    "Target Budget (S$)",
-                    min_value=10.0,
-                    value=500.0,
-                    step=10.0,
-                    key="target_price_find_widget"
-                )
-            
-            day_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-            weekday_idx_f = departure_date_f.weekday()
-            dep_day_name_f = day_names[weekday_idx_f]
-            is_weekend_val_f = (weekday_idx_f >= 5)
-            dep_month_f = departure_date_f.month
-            
-            st.info(f"📅 **Departure:** {dep_day_name_f} " + 
-                    ("🟩" if not is_weekend_val_f else "🟥 (Weekend)"))
-            
-            # 3. Carrier Preferences
-            st.markdown('<h3 style="margin-top: 15px; margin-bottom: 12px; color: #0f172a; font-size: 1.25rem; font-weight: 600; white-space: nowrap; line-height: 1.2;">Carrier Preferences</h3>', unsafe_allow_html=True)
-            
-            is_lhr_route_f = (origin_code_f == 'LHR' or dest_code_f == 'LHR')
-            if is_lhr_route_f:
-                st.caption("Fares are based on Economy class tickets only. *(Low Cost Carriers are unavailable for LHR routes)*")
-                carrier_options_f = ["Full Service Carrier (e.g. Singapore Airlines, Qantas, British Airways)"]
-            else:
-                st.caption("Fares are based on Economy class tickets only.")
-                carrier_options_f = [
-                    "Full Service Carrier (e.g. Singapore Airlines, Qantas, British Airways)", 
-                    "Low Cost Carrier (e.g. AirAsia, Scoot, Jetstar)"
-                ]
-            
-            carrier_choice_f = st.radio(
-                "Carrier Service Class",
-                carrier_options_f,
-                index=0,
-                key="carrier_choice_find_widget",
-                label_visibility="collapsed"
-            )
-            is_lcc_val_f = 1 if "Low Cost" in carrier_choice_f else 0
-            
-            # 4. Holiday Calendars (Side-by-Side checkboxes, compact)
-            st.markdown('<h3 style="margin-top: 15px; margin-bottom: 12px; color: #0f172a; font-size: 1.25rem; font-weight: 600; white-space: nowrap; line-height: 1.2;">Holiday Calendars</h3>', unsafe_allow_html=True)
-            st.caption("These fields are auto-populated based on the selected departure date and route, but you can manually override them.")
-            
-            try:
-                holiday_lookup_f = get_holiday_lookup_sets(departure_date_f.year)
-                auto_holiday_sin_f = departure_date_f in holiday_lookup_f.get('SIN', set())
+                is_lcc_val_f = 1 if "Low Cost" in carrier_choice_f else 0
                 
-                other_airport_f = dest_code_f if origin_code_f == 'SIN' else origin_code_f
-                auto_holiday_other_f = departure_date_f in holiday_lookup_f.get(other_airport_f, set())
-            except Exception:
-                auto_holiday_sin_f = False
-                auto_holiday_other_f = False
+                # 4. Holiday Calendars (Side-by-Side checkboxes, compact)
+                st.markdown('<h3 style="margin-top: 15px; margin-bottom: 12px; color: #0f172a; font-size: 1.25rem; font-weight: 600; white-space: nowrap; line-height: 1.2;">Holiday Calendars</h3>', unsafe_allow_html=True)
+                st.caption("These fields are auto-populated based on the selected departure date and route, but you can manually override them.")
                 
-            try:
-                auto_sch_holiday_f = is_sch_holiday_calc(departure_date_f)
-            except Exception:
-                auto_sch_holiday_f = False
-                
-            col_h1_f, col_h2_f, col_h3_f = st.columns(3)
-            with col_h1_f:
-                is_holiday_sin_val_f = 1 if st.checkbox("Singapore Public Holiday", value=auto_holiday_sin_f, key="holiday_sin_find") else 0
-            with col_h2_f:
-                is_holiday_other_val_f = 1 if st.checkbox("Destination Public Holiday", value=auto_holiday_other_f, key="holiday_other_find") else 0
-            with col_h3_f:
-                is_sch_holiday_val_f = 1 if st.checkbox("Singapore School Holiday", value=auto_sch_holiday_f, key="sch_holiday_find") else 0
+                try:
+                    holiday_lookup_f = get_holiday_lookup_sets(departure_date_f.year)
+                    auto_holiday_sin_f = departure_date_f in holiday_lookup_f.get('SIN', set())
+                    
+                    other_airport_f = dest_code_f if origin_code_f == 'SIN' else origin_code_f
+                    auto_holiday_other_f = departure_date_f in holiday_lookup_f.get(other_airport_f, set())
+                except Exception:
+                    auto_holiday_sin_f = False
+                    auto_holiday_other_f = False
+                    
+                try:
+                    auto_sch_holiday_f = is_sch_holiday_calc(departure_date_f)
+                except Exception:
+                    auto_sch_holiday_f = False
+                    
+                col_h1_f, col_h2_f, col_h3_f = st.columns(3)
+                with col_h1_f:
+                    is_holiday_sin_val_f = 1 if st.checkbox("Singapore Public Holiday", value=auto_holiday_sin_f, key="holiday_sin_find") else 0
+                with col_h2_f:
+                    is_holiday_other_val_f = 1 if st.checkbox("Destination Public Holiday", value=auto_holiday_other_f, key="holiday_other_find") else 0
+                with col_h3_f:
+                    is_sch_holiday_val_f = 1 if st.checkbox("Singapore School Holiday", value=auto_sch_holiday_f, key="sch_holiday_find") else 0
             
             # Calculate Button at the bottom
             st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
